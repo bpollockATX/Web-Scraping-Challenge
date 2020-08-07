@@ -4,29 +4,27 @@
 # from sqlalchemy.ext.automap import automap_base
 # from sqlalchemy.orm import Session
 # from sqlalchemy import create_engine, func
-from flask import Flask, jsonify
+from flask import Flask, render_template 
 from scrape_mars import scrape
-
-# # db Setup
-conn = "mongodb://localhost:27017"
-client = pymongo.MongoClient(conn)
-
-# measurement = base.classes.measurement
-# station = base.classes.station
+import pymongo
 
 # flask setup
 app = Flask(__name__)
 
+# Create connection
+conn = 'mongodb://localhost:27017'
+client = pymongo.MongoClient(conn)
 
-#############################################
-# /api/v1.0/precipitation
-#############################################
+# Create DB, collection
+db = client.mars_db
+
+
 
 @app.route("/scrape")
 def call_scrape():
-    return scrape
-
-
+    my_data = scrape()
+    db.mars_tbl.update({}, my_data, upsert = True)
+    print(my_data)
                                               
 if __name__ == '__main__':
     app.run(debug=False)

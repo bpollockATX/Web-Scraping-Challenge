@@ -24,7 +24,7 @@ def scrape():
 
     url = 'https://mars.nasa.gov/news/'
     browser.visit(url)
-    time.sleep(10)
+    time.sleep(2)
     response = requests.get(url)
 
 
@@ -37,8 +37,6 @@ def scrape():
 
     soup = BeautifulSoup(html, 'html.parser')
 
-    print(soup.prettify)
-
 
     # In[5]:
 
@@ -47,10 +45,8 @@ def scrape():
     list_container = soup.find_all('div', class_ = 'image_and_description_container')[0]
     # list_container
     new_title_results = list_container.find('div', class_ = 'content_title').text
-    print(new_title_results)
 
     new_paragraph_results = list_container.find('div', class_ = 'article_teaser_body').text
-    print(new_paragraph_results)
 
 
     # In[6]:
@@ -59,7 +55,7 @@ def scrape():
     # Use splinter to inspect JPL site
     jpl_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(jpl_url)
-    time.sleep(10)
+    time.sleep(2)
 
 
     # In[7]:
@@ -98,7 +94,6 @@ def scrape():
     # print(main_image)
 
     featured_image_url = (f'https://www.jpl.nasa.gov{featured_image_url}')
-    featured_image_url
 
 
     # In[12]:
@@ -106,7 +101,7 @@ def scrape():
 
     # Visit Mars Weather Twitter
     browser.visit('https://twitter.com/marswxreport?lang=en')
-    time.sleep(10)
+    time.sleep(2)
     twitter_html = browser.html
 
 
@@ -114,7 +109,6 @@ def scrape():
 
 
     soup_3 = BeautifulSoup(twitter_html, 'html.parser')
-    print(soup_3.prettify)
 
 
     # In[14]:
@@ -122,7 +116,6 @@ def scrape():
 
     # top_post = soup_3.find_all(attrs={"dir": "auto"})
     mars_weather = soup_3.find('div', class_ = 'css-901oao r-hkyrab r-1qd0xha r-a023e6 r-16dba41 r-ad9z0x r-bcqeeo r-bnwqim r-qvutc0').text
-    print(mars_weather)
 
 
     # In[15]:
@@ -130,7 +123,6 @@ def scrape():
 
     # Mars facts section
     mars_html = pd.read_html('http://space-facts.com/mars/')
-    mars_html[0]
 
 
     # In[16]:
@@ -140,7 +132,6 @@ def scrape():
                             ,"Measurement": mars_html[0].iloc[:,1]})
     # mars_df
     mars_df_html = mars_df.to_html()
-    print(mars_df_html)
 
 
     # In[17]:
@@ -148,7 +139,7 @@ def scrape():
 
     # Visit the USGS Astrogeology site
     browser.visit('https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars')
-    time.sleep(10)
+    time.sleep(2)
     usgs_html = browser.html
 
 
@@ -156,7 +147,6 @@ def scrape():
 
 
     soup_4 = BeautifulSoup(usgs_html, 'html.parser')
-    print(soup_4.prettify)
 
 
     # In[19]:
@@ -191,13 +181,13 @@ def scrape():
 
     # Get Cerberus Image
     browser.visit(cerberus_url)
-    time.sleep(10)
+    time.sleep(2)
     cerberus_html = browser.html
 
     cerberus_soup = BeautifulSoup(cerberus_html, 'html.parser')
 
     cerberus_img_url = cerberus_soup.find('li').find('a')['href']
-    cerberus_img_url
+    
 
 
     # In[22]:
@@ -205,13 +195,13 @@ def scrape():
 
     # Get Schiaparelli Image
     browser.visit(schiaparelli_url)
-    time.sleep(10)
+    time.sleep(2)
     schiaparelli_html = browser.html
 
     schiaparelli_soup = BeautifulSoup(schiaparelli_html, 'html.parser')
 
     schiaparelli_img_url = schiaparelli_soup.find('li').find('a')['href']
-    schiaparelli_img_url
+    
 
 
     # In[23]:
@@ -219,13 +209,13 @@ def scrape():
 
     # Get Syrtis Image
     browser.visit(syrtis_url)
-    time.sleep(10)
+    time.sleep(2)
     syrtis_html = browser.html
 
     syrtis_soup = BeautifulSoup(syrtis_html, 'html.parser')
 
     syrtis_img_url = syrtis_soup.find('li').find('a')['href']
-    syrtis_img_url
+    
 
 
     # In[24]:
@@ -233,13 +223,13 @@ def scrape():
 
     # Get Valles Image
     browser.visit(valles_url)
-    time.sleep(10)
+    time.sleep(2)
     valles_html = browser.html
 
     valles_soup = BeautifulSoup(valles_html, 'html.parser')
 
     valles_img_url = valles_soup.find('li').find('a')['href']
-    valles_img_url
+    
 
 
     # In[25]:
@@ -250,10 +240,21 @@ def scrape():
                             ,{"title": "Schiaparelli Hemisphere", "img_url": schiaparelli_img_url}
                             ,{"title": "Syrtis Hemisphere", "img_url": syrtis_img_url}
                             ,{"title": "Valles Hemisphere", "img_url": valles_img_url}]
-    hemisphere_image_urls
+    
 
-    return(hemisphere_image_urls)
 
+#store in dicitonary
+    mars_data = {
+        "news_title": new_title_results,
+        "news_p": new_paragraph_results,
+        "img_url": featured_image_url,
+        "mars_weather": mars_weather,
+        "mars_info": mars_df_html,
+        "hemispheres": hemisphere_image_urls
+        }
+    
+    return mars_data
+# print(scrape())
 
 # In[ ]:
 
@@ -262,7 +263,4 @@ def scrape():
 
 
 # In[ ]:
-
-
-
 
